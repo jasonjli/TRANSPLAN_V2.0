@@ -1,0 +1,30 @@
+#Defining complier and linker
+CC     = gcc
+CCC    = g++
+LINKER = g++
+
+
+# Compiler Flags
+DEBUG    = -g
+OPTIMIZE = -O2
+
+CFLAGS = $(DEBUG) $(OPTIMIZE)
+LFLAGS = $(DEBUG) $(OPTIMIZE)
+
+INCLUDES = -I
+LIBS = -L
+
+
+#
+# Variables for Tempral trans plan
+#
+TRANS_PLAN_HOME = ..
+TRANS_PLAN_SRC = $(TRANS_PLAN_HOME)/src/
+
+## 
+TRANS_PLAN_INCL = $(INCLUDES)$(TRANS_PLAN_HOME)/include
+
+#
+# Standard Extension
+#
+EXEEXT=
