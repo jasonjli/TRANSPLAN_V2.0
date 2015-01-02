@@ -29,15 +29,15 @@
 namespace TRANSPLAN
 {
 
-    //class Search;
-    class Digraph;
-    class Reader;
-    class SVTrans;
-    class RTrans;
-    class Resource;
-    class Activity;
-    class StateVariable;
-    class SQMatrix;
+	//class Search;
+	class Digraph;
+	class Reader;
+	class SVTrans;
+	class RTrans;
+	class Resource;
+	class Activity;
+	class StateVariable;
+	class SQMatrix;
 
 #define SV(sv)                    Transplan::statevars[sv]
 #define RES(res)                  Transplan::resources[res]
@@ -76,225 +76,230 @@ namespace TRANSPLAN
 #define DUMMY_START               Transplan::dummy_start_action
 #define DUMMY_END                 Transplan::dummy_end_action
 
-    class Transplan
-    {
-    private:
-        void add_IG_prod_cons();
-        void add_DUMMY_S_E();
-        void update();
-        void create_mutex();
-        void create_possible_pred_succ_for_transitions();
-    public:
+	class Transplan
+	{
+		private:
+			void add_IG_prod_cons();
+			void add_DUMMY_S_E();
+			void update();
+			void create_mutex();
+			void create_possible_pred_succ_for_transitions();
+		public:
 
-        //problem reader
-        Reader* reader;
+			//problem reader
+			Reader* reader;
 
-        // Number of actions
-        static int n_activities;
+			// Number of actions
+			static int n_activities;
 
-        //actions
-        static std::vector<Activity> activities;
+			//actions
+			static std::vector<Activity> activities;
 
-        //number of resources
-        static int n_resources;
+			//number of resources
+			static int n_resources;
 
-        // resources
-        static std::vector<Resource> resources;
+			// resources
+			static std::vector<Resource> resources;
 
-        //resource name-index map
-        static std::map<std::string, int> r_name_index_map;
+			//resource name-index map
+			static std::map<std::string, int> r_name_index_map;
 
+			//number of resources
+			static int n_statevars;
 
-        //number of resources
-        static int n_statevars;
+			//State Variables
+			static std::vector<StateVariable> statevars;
 
-        //State Variables
-        static std::vector<StateVariable> statevars;
+			//state variable name-index map
+			static std::map<std::string, int> sv_name_index_map;
 
-        //state variable name-index map
-        static std::map<std::string, int> sv_name_index_map;
+			//Total number of state variable transitions
+			static int n_sv_trans;
 
-        //Total number of state variable transitions
-        static int n_sv_trans;
+			// transitions
+			static std::vector<SVTrans> sv_trans;
 
+			//Total number of resource transitions
+			static int n_r_trans;
 
-        // transitions
-        static std::vector<SVTrans> sv_trans;
+			// transitions
+			static std::vector<RTrans> r_trans;
 
-        //Total number of resource transitions
-        static int n_r_trans;
+			//// number of matrices
+			static int n_sq_matrices;
 
-        // transitions
-        static std::vector<RTrans> r_trans;
+			//// matrices
+			static std::vector<SQMatrix> sqmatrices;
 
+			//name of the problem
+			static std::string problem_name;
 
-        //// number of matrices
-        static int n_sq_matrices;
+			static int UPPER_BOUND;
+			static int DEFAULT;
 
-        //// matrices
-        static std::vector<SQMatrix> sqmatrices;
+			static int HORIZON;
 
-        //name of the problem
-        static std::string problem_name;
+			static int run_time_start;
+			static int run_time_end;
 
-        static int UPPER_BOUND;
-        static int DEFAULT;
+			static int dummy_start_action;
+			static int dummy_end_action;
 
-        static int HORIZON;
+			static IntVector must_be_inplan_actions;
 
-        static int run_time_start;
-        static int run_time_end;
+			static IntPairVector act_precedence_user;
+			//HSPS::STN tcn;
 
-        static int dummy_start_action;
-        static int dummy_end_action;
+			/*===================================================================================================*/
 
+			// constructor
+			Transplan();
 
-        static IntVector must_be_inplan_actions;
+			~Transplan()
+			{
+				delete reader;
+			}
 
-        static IntPairVector act_precedence_user;
-        //HSPS::STN tcn;
+			/* Read Problem */
+			//void readAFSCN(std::string data_file, std::string res_file);
 
-        /*===================================================================================================*/
+			void addActPrecedence(int from_act, int to_act);
 
-        // constructor
-        Transplan();
+			void addActInplan(int act_idx);
 
-        ~Transplan()
-        {
-            delete reader;
-        }
+			/**
+			 Get Resource index, from name
+			 */
+			int getResIndex(std::string name)
+			{
+				if (r_name_index_map.find(name) == r_name_index_map.end())
+				{
+					return -1;
+				}
 
-        /* Read Problem */
-        //void readAFSCN(std::string data_file, std::string res_file);
+				return r_name_index_map.find(name)->second;
+			}
 
-        void addActPrecedence(int from_act, int to_act);
+			int getSVIndex(std::string name)
+			{
+				if (sv_name_index_map.find(name) == sv_name_index_map.end())
+				{
+					return -1;
+				}
 
-        void addActInplan(int act_idx);
+				return sv_name_index_map.find(name)->second;
+			}
 
-        /**
-           Get Resource index, from name
-         */
-        int getResIndex(std::string name)
-        {
-            if (r_name_index_map.find(name) == r_name_index_map.end())
-            {
-                return -1;
-            }
+			///// Interface for state variable creation
+			bool addState(int state_var_index, std::string state_name);
+			void setInitialState(int state_var_index, std::string state);
+			void setGoalState(int state_var_index, std::string state);
+			void setNonGoalState(int state_var_index, std::string state);
+			void setMaxPersist(int state_var_index, std::string state, int val);
+			void setMinPersist(int state_var_index, std::string state, int val);
+			void setStabilityOffset(int state_var_index, std::string state, int val);
+			void addSVSetupMatrix(int state_var_index, int matrix_id);
 
-            return r_name_index_map.find(name)->second;
-        }
+			int getSVStateIndex(int state_var_index, std::string state);
 
-        int getSVIndex(std::string name)
-        {
-            if (sv_name_index_map.find(name) == sv_name_index_map.end())
-            {
-                return -1;
-            }
+			///////////// resource
+			void addRESSetupMatrix(int resource_index, int matrix_id);
 
-            return sv_name_index_map.find(name)->second;
-        }
+			void updateActionTransitionOrdering();
 
-        ///// Interface for state variable creation
-        bool addState(int state_var_index, std::string state_name);
-        void setInitialState(int state_var_index, std::string state);
-        void setGoalState(int state_var_index, std::string state);
-        void setNonGoalState(int state_var_index, std::string state);
-        void setMaxPersist(int state_var_index, std::string state, int val);
-        void setMinPersist(int state_var_index, std::string state, int val);
-        void setStabilityOffset(int state_var_index, std::string state, int val);
-        void addSVSetupMatrix(int state_var_index, int matrix_id);
+			/**
+			 Create a new activity
+			 */
 
-        int getSVStateIndex(int state_var_index, std::string state);
+			int createNewActivity(std::string name);
+			/**
+			 Create new state variable
+			 */
+			int createNewStateVariable(std::string name);
 
+			/**
+			 Create new resource
+			 */
 
-        ///////////// resource
-        void addRESSetupMatrix(int resource_index, int matrix_id);
+			int createNewResource(std::string name, int cap, RES_TYPE type);
 
-        void updateActionTransitionOrdering();
+			void setResourceInitLevel(int res_idx, int val);
 
-        /**
-           Create a new activity
-         */
+			void setResourceGoalLevel(int res_idx, int val_min, int val_max);
+			/**
+			 Create new state variable transiton, returns the global index
+			 */
+			int createNewStateVariableTransition(int sv_index, int a_index, int from, int to, int dur, int offset, int setup_state);
 
-        int createNewActivity(std::string name);
-        /**
-           Create new state variable
-         */
-        int createNewStateVariable(std::string name);
+			/**
+			 Create new resource transition and returns the global index
+			 */
+			int createNewResourceTransition(int r_index, int a_index, int req, TRANS_TYPE type, int dur, int offset, int setup_state, int mode);
 
-        /**
-           Create new resource
-         */
+			/**
+			 Create new square matrix and returns the global index
+			 */
+			int createNewSquareMatrix(int n_size, int def_val);
 
-        int createNewResource(std::string name,
-                int cap,
-                RES_TYPE type);
+			static int getSetupTime(int sq_matrix_idx, int from_state, int to_state);
 
+			/**
+			 Initialize
+			 */
+			void initialize();
 
-        void setResourceInitLevel(int res_idx, int val);
+			/**
+			 DFS Search
+			 */
+			void search();
 
-        void setResourceGoalLevel(int res_idx, int val_min, int val_max);
-        /**
-           Create new state variable transiton, returns the global index
-         */
-        int createNewStateVariableTransition(int sv_index,
-                int a_index,
-                int from,
-                int to,
-                int dur,
-                int offset,
-                int setup_state);
+			/**
+			 DFS Branch-and-Bound
+			 */
+			void search_bb();
 
+			/**
+			 Print stat
+			 */
+			void print_stat();
 
-        /**
-           Create new resource transition and returns the global index
-         */
-        int createNewResourceTransition(int r_index,
-                int a_index,
-                int req,
-                TRANS_TYPE type,
-                int dur,
-                int offset,
-                int setup_state,
-                int mode);
+			static void print_dot_distance_graph(std::string& problem_name);
+			static void print_dot_distance_graph_res(int res_index, std::string& problem_name);
 
-        /**
-           Create new square matrix and returns the global index
-         */
-        int createNewSquareMatrix(int n_size, int def_val);
+			static int getTransActIndex(int tIndex, bool isSVT)
+			{
+				if (isSVT)
+				{
+					return Transplan::sv_trans[tIndex].a_index;
+				}
+				else
+					return Transplan::r_trans[tIndex].a_index;
+			}
 
+			static int getTransDuration(int tIndex, bool isSVT)
+			{
+				if (isSVT)
+				{
+					return Transplan::sv_trans[tIndex].duration;
+				}
+				else
+					return Transplan::r_trans[tIndex].duration;
+			}
 
-        static int getSetupTime(int sq_matrix_idx, int from_state, int to_state);
+			static int getTransOffset(int tIndex, bool isSVT)
+			{
+				if (isSVT)
+				{
+					return Transplan::sv_trans[tIndex].offset;
+				}
+				else
+					return Transplan::r_trans[tIndex].offset;
+			}
+			/* Extract solution
+			 void print_plan(Search* search);
+			 */
 
-        /**
-           Initialize
-         */
-        void initialize();
-
-        /**
-           DFS Search
-         */
-        void search();
-
-        /**
-           DFS Branch-and-Bound
-         */
-        void search_bb();
-
-        /**
-           Print stat
-         */
-        void print_stat();
-
-        static void print_dot_distance_graph(std::string& problem_name);
-        static void print_dot_distance_graph_res(int res_index, std::string& problem_name);
-
-
-        /* Extract solution 
-        void print_plan(Search* search);
-         */
-
-    };
+	};
 }
 
 #endif

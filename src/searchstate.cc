@@ -153,7 +153,7 @@ namespace TRANSPLAN
 
 	bool SearchState::propagate()
 	{
-		while (!this->propagators.empty() || this->inferators.empty())
+		while (!this->propagators.empty() || !this->inferators.empty())
 		{
 			while (!this->propagators.empty())
 			{

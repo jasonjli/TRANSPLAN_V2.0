@@ -243,6 +243,145 @@ namespace TRANSPLAN
 					return this->rt_UB_inferators[tIndex];
 				}
 			}
+
+			int getPrevailInferatorIndex(int prevailTransIndex)
+			{
+				return this->prevail_inferators[prevailTransIndex];
+			}
+
+			/////////////////// general transitions /////////////////////////////
+			CSPIntervalVar& getTransStart(SearchState* state, int t_index, bool isSVT)
+			{
+				if (isSVT)
+				{
+					return this->svt_start(state, t_index);
+				}
+				else
+				{
+					return this->rt_start(state, t_index);
+				}
+
+			}
+
+			CSPIntervalVar& getTransEnd(SearchState* state, int t_index, bool isSVT)
+			{
+				if (isSVT)
+				{
+					return this->svt_end(state, t_index);
+				}
+				else
+				{
+					return this->rt_end(state, t_index);
+				}
+			}
+
+			CSPBoolVar& getTransInplan(SearchState* state, int t_index, bool isSVT)
+			{
+				if (isSVT)
+				{
+					return this->svt_inplan(state, t_index);
+				}
+				else
+				{
+					return this->rt_inplan(state, t_index);
+				}
+			}
+
+			CSPAuxSetMonoIncVar& getTransMustBefore(SearchState* state, int t_index, bool isSVT)
+			{
+				if (isSVT)
+				{
+					return this->svt_must_before(state, t_index);
+				}
+				else
+				{
+					return this->rt_must_before(state, t_index);
+				}
+			}
+
+			CSPAuxSetMonoIncVar& getTransMustAfter(SearchState* state, int t_index, bool isSVT)
+			{
+				if (isSVT)
+				{
+					return this->svt_must_after(state, t_index);
+				}
+				else
+				{
+					return this->rt_must_after(state, t_index);
+				}
+			}
+
+			CSPAuxSetMonoIncVar& getTransMustNOTBefore(SearchState* state, int t_index, bool isSVT)
+			{
+				if (isSVT)
+				{
+					return this->svt_mustnot_before(state, t_index);
+				}
+				else
+				{
+					return this->rt_mustnot_before(state, t_index);
+				}
+			}
+			CSPAuxSetMonoIncVar& getTransMustNOTAfter(SearchState* state, int t_index, bool isSVT)
+			{
+				if (isSVT)
+				{
+					return this->svt_mustnot_after(state, t_index);
+				}
+				else
+				{
+					return this->rt_mustnot_after(state, t_index);
+				}
+			}
+
+			CSPAuxSetVar& getTransLB(SearchState* state, int t_index, bool isSVT)
+			{
+				if (isSVT)
+				{
+					return this->svt_LB(state, t_index);
+				}
+				else
+				{
+					return this->rt_LB(state, t_index);
+				}
+			}
+
+			CSPAuxSetVar& getTransUB(SearchState* state, int t_index, bool isSVT)
+			{
+				if (isSVT)
+				{
+					return this->svt_UB(state, t_index);
+				}
+				else
+				{
+					return this->rt_UB(state, t_index);
+				}
+			}
+
+			CSPAuxSetVar& getTransLBChildren(SearchState* state, int t_index, bool isSVT)
+			{
+				if (isSVT)
+				{
+					return this->svt_LBChildren(state, t_index);
+				}
+				else
+				{
+					return this->rt_LBChildren(state, t_index);
+				}
+			}
+
+			CSPAuxSetVar& getTransUBChildren(SearchState* state, int t_index, bool isSVT)
+			{
+				if (isSVT)
+				{
+					return this->svt_UBChildren(state, t_index);
+				}
+				else
+				{
+					return this->rt_UBChildren(state, t_index);
+				}
+			}
+
 	};
 }
 

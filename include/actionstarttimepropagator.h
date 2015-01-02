@@ -5,8 +5,8 @@
  * Created on 20 November 2014, 6:33 PM
  */
 
-#ifndef ACTIONSTARTTIMECHANGEDPROPAGATOR_H
-#define	ACTIONSTARTTIMECHANGEDPROPAGATOR_H
+#ifndef ACTIONSTARTTIMEPROPAGATOR_H
+#define	ACTIONSTARTTIMEPROPAGATOR_H
 
 #include "propagator.h"
 #include "transplan.h"

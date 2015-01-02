@@ -29,6 +29,7 @@ namespace TRANSPLAN
         
         PROP_STATUS propagate(SearchState* state)
         {
+        	this->currentState = state;
         	///for each pair (A1,A2)
         	///propagate start times between action distance A2.Start >= A1.Start + dist
         	///propagate transitive closure of distances, a-->c, and c-->d, then update a--->d
