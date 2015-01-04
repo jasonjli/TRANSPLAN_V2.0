@@ -18,22 +18,31 @@ namespace TRANSPLAN
 	{
 		private:
 
+			PROP_STATUS propagateTransStartTimes(int transIndex, IntPair startTime, bool isLB, bool isUB, bool isSVT)
+			{
+				int offset = Transplan::getTransOffset(transIndex, isSVT);
+
+				if (isLB)
+				{
+					int newStart = startTime.first + offset;
+					IMPLY_EXCL_ON_FAILURE(manager.svt_start(this->currentState, transIndex).gq(newStart), actionIndex);
+				}
+
+				if (isUB)
+				{
+					int newStart = startTime.second + offset;
+					IMPLY_EXCL_ON_FAILURE(manager.svt_start(this->currentState, transIndex).lq(newStart), actionIndex);
+				}
+
+				return TRANSPLAN::FIX;
+			}
+
 			PROP_STATUS propagateSVTStartTimes(IntPair startTime, bool isLB, bool isUB)
 			{
 				IntVector svTrans = Transplan::activities[actionIndex].sv_trans;
 				for (int i = 0; i < svTrans.size(); i++)
 				{
-					if (isLB)
-					{
-						int start_offset = startTime.first + Transplan::sv_trans[svTrans[i]].offset;
-						IMPLY_EXCL_ON_FAILURE(manager.svt_start(this->currentState, svTrans[i]).gq(start_offset), actionIndex);
-					}
-
-					if (isUB)
-					{
-						int start_offset = startTime.second + Transplan::sv_trans[svTrans[i]].offset;
-						IMPLY_EXCL_ON_FAILURE(manager.svt_start(this->currentState, svTrans[i]).lq(start_offset), actionIndex);
-					}
+					RETURN_IF_FAIL(propagateTransStartTimes(svTrans[i], startTime, isLB, isUB, true));
 				}
 
 			}
@@ -43,17 +52,7 @@ namespace TRANSPLAN
 				IntVector rTrans = Transplan::activities[actionIndex].r_trans;
 				for (int i = 0; i < rTrans.size(); i++)
 				{
-					if (isLB)
-					{
-						int start_offset = startTime.first + Transplan::r_trans[rTrans[i]].offset;
-						IMPLY_EXCL_ON_FAILURE(manager.rt_start(this->currentState, rTrans[i]).gq(start_offset), actionIndex);
-					}
-
-					if (isUB)
-					{
-						int start_offset = startTime.second + Transplan::r_trans[rTrans[i]].offset;
-						IMPLY_EXCL_ON_FAILURE(manager.rt_start(this->currentState, rTrans[i]).lq(start_offset), actionIndex);
-					}
+					RETURN_IF_FAIL(propagateTransStartTimes(rTrans[i], startTime, isLB, isUB, false));
 				}
 
 			}

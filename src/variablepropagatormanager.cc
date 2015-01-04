@@ -808,22 +808,32 @@ namespace TRANSPLAN
 
 	bool VariablePropagatorManager::isActIncluded(SearchState* state, int act_index)
 	{
-		return a_inplan(state, act_index).isTrue() || !a_inplan(state, act_index).assigned();
+		return a_inplan(state, act_index).isTrue();
 	}
 
 	bool VariablePropagatorManager::isActExcluded(SearchState* state, int act_index)
 	{
-		return a_inplan(state, act_index).isFalse() || !a_inplan(state, act_index).assigned();
+		return a_inplan(state, act_index).isFalse();
 	}
 
 	bool VariablePropagatorManager::isSVTIncluded(SearchState* state, int svt_index)
 	{
-		return svt_inplan(state, svt_index).isTrue() || !a_inplan(state, svt_index).assigned();
+		return svt_inplan(state, svt_index).isTrue();
+	}
+
+	bool VariablePropagatorManager::isSVTExcluded(SearchState* state, int svt_index)
+	{
+		return svt_inplan(state, svt_index).isFalse();
 	}
 
 	bool VariablePropagatorManager::isRTIncluded(SearchState* state, int rt_index)
 	{
-		return rt_inplan(state, rt_index).isTrue() || !a_inplan(state, rt_index).assigned();
+		return rt_inplan(state, rt_index).isTrue();
+	}
+
+	bool VariablePropagatorManager::isRTExcluded(SearchState* state, int rt_index)
+	{
+		return rt_inplan(state, rt_index).isFalse();
 	}
 
 	int VariablePropagatorManager::getRemDemand(SearchState* state, int rt_index)

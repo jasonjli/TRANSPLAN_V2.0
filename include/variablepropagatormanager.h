@@ -204,9 +204,39 @@ namespace TRANSPLAN
 
 			bool isActExcluded(SearchState* state, int act_index);
 
+			bool isTransIncluded(SearchState* state, int tIndex, bool isSVT)
+			{
+				if (isSVT)
+				{
+					return isSVTIncluded(state, tIndex);
+				}
+				else
+				{
+					return isRTIncluded(state, tIndex);
+				}
+
+			}
+
+			bool isTransExcluded(SearchState* state, int tIndex, bool isSVT)
+			{
+				if (isSVT)
+				{
+					return isSVTExcluded(state, tIndex);
+				}
+				else
+				{
+					return isRTExcluded(state, tIndex);
+				}
+
+			}
+
 			bool isSVTIncluded(SearchState* state, int svt_index);
 
 			bool isRTIncluded(SearchState* state, int rt_index);
+
+			bool isSVTExcluded(SearchState* state, int svt_index);
+
+			bool isRTExcluded(SearchState* state, int rt_index);
 
 			int getRemDemand(SearchState* state, int rt_index);
 
