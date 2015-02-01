@@ -79,7 +79,7 @@ namespace TRANSPLAN
 
 		VariablePropagatorManager::rt_remaining_demand.clear(); //CSPInterval
 		VariablePropagatorManager::rt_remaining_support.clear(); //CSPInterval
-		VariablePropagatorManager::rt_direct_inflow.clear(); //CSPInterval
+		VariablePropagatorManager::rt_FSS.clear(); //CSPInterval
 
 		VariablePropagatorManager::rt_poss_pred.clear(); //CSPAuxMonoDecSet
 		VariablePropagatorManager::rt_poss_succ.clear(); //CSPAuxMonoDecSet
@@ -217,8 +217,8 @@ namespace TRANSPLAN
 			//remaining support
 			rt_remaining_support.push_back(createNewIntervalVar(p_rem_supp));
 
-			//direct inflow
-			rt_direct_inflow.push_back(createNewIntervalVar(p_dir_inflow));
+			//Flow from Start
+			rt_FSS.push_back(createNewIntervalVar(p_dir_inflow));
 
 			/// possible predecessors
 			rt_poss_pred.push_back(createNewAuxMonoDecSet(t->poss_pred));
@@ -638,9 +638,9 @@ namespace TRANSPLAN
 		return state->getCSPIntervalVar(rt_remaining_support[rt_index]);
 	}
 
-	CSPIntervalVar& VariablePropagatorManager::direct_inflow(SearchState* state, int rt_index)
+	CSPIntervalVar& VariablePropagatorManager::FSS(SearchState* state, int rt_index)
 	{
-		return state->getCSPIntervalVar(rt_direct_inflow[rt_index]);
+		return state->getCSPIntervalVar(rt_FSS[rt_index]);
 	}
 
 	CSPAuxSetMonoDecVar& VariablePropagatorManager::poss_pred(SearchState* state, int rt_index)
@@ -846,19 +846,24 @@ namespace TRANSPLAN
 		return rem_supp(state, rt_index).max();
 	}
 
-	int VariablePropagatorManager::getInflow(SearchState* state, int rt_index)
+	int VariablePropagatorManager::getFFS(SearchState* state, int rt_index)
 	{
-		return direct_inflow(state, rt_index).min();
+		return FSS(state, rt_index).min();
 	}
 
-	int VariablePropagatorManager::getInflowGap(SearchState* state, int rt_index)
+	int VariablePropagatorManager::getFFSGap(SearchState* state, int rt_index)
 	{
-		return direct_inflow(state, rt_index).max() - direct_inflow(state, rt_index).min();
+		return FSS(state, rt_index).max() - FSS(state, rt_index).min();
 	}
 
-	int VariablePropagatorManager::getRTSupport(SearchState* state, int t_from, int t_to)
+	int VariablePropagatorManager::getRTSupportMax(SearchState* state, int t_from, int t_to)
 	{
 		return rt_supp(state, t_from, t_to).max();
+	}
+
+	int VariablePropagatorManager::getRTSupportMin(SearchState* state, int t_from, int t_to)
+	{
+		return rt_supp(state, t_from, t_to).min();
 	}
 
 	bool VariablePropagatorManager::isRTSupporting(SearchState* state, int t_from, int t_to)

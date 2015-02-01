@@ -38,7 +38,7 @@ namespace TRANSPLAN
 
 			IntVector rt_remaining_demand; //CSPInterval
 			IntVector rt_remaining_support; //CSPInterval
-			IntVector rt_direct_inflow; //CSPInterval
+			IntVector rt_FSS; //CSPInterval
 
 			IntVector rt_poss_pred; //CSPAuxMonoDecSet
 			IntVector rt_poss_succ; //CSPAuxMonoDecSet
@@ -147,7 +147,7 @@ namespace TRANSPLAN
 
 			CSPIntervalVar& rem_demand(SearchState* state, int rt_index);
 			CSPIntervalVar& rem_supp(SearchState* state, int rt_index);
-			CSPIntervalVar& direct_inflow(SearchState* state, int rt_index);
+			CSPIntervalVar& FSS(SearchState* state, int rt_index);
 			CSPAuxSetMonoDecVar& poss_pred(SearchState* state, int rt_index);
 			CSPAuxSetMonoDecVar& poss_succ(SearchState* state, int rt_index);
 			CSPAuxSetMonoIncVar& customers(SearchState* state, int rt_index);
@@ -242,11 +242,13 @@ namespace TRANSPLAN
 
 			int getRemSupport(SearchState* state, int rt_index);
 
-			int getInflow(SearchState* state, int rt_index);
+			int getFFS(SearchState* state, int rt_index);
 
-			int getInflowGap(SearchState* state, int rt_index);
+			int getFFSGap(SearchState* state, int rt_index);
 
-			int getRTSupport(SearchState* state, int t_from, int t_to);
+			int getRTSupportMax(SearchState* state, int t_from, int t_to);
+
+			int getRTSupportMin(SearchState* state, int t_from, int t_to);
 
 			bool isRTSupporting(SearchState* state, int t_from, int t_to);
 
