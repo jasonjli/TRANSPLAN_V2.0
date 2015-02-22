@@ -22,7 +22,7 @@ namespace TRANSPLAN
         int change_before; // after this time no transition can change this state to other state
         int change_after; // transitions can change this state to other state after this time
         int min_persist; // once achieved, the state can't be changed at least this period of time
-        int max_persist; // once achived, the state must be changed within this period of time
+        int max_persist; // once achieved, the state must be changed within this period of time
         int min_change; // minimum number of time this state can be changed to other state
         int max_change;
         int min_achieve; // minimum number of time this state can be achieved from other state

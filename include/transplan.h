@@ -295,6 +295,23 @@ namespace TRANSPLAN
 				else
 					return Transplan::r_trans[tIndex].offset;
 			}
+
+			static IntSet getTranMutexSet(int rtIndex)
+			{
+				return Transplan::r_trans[rtIndex].mutex_trans;
+			}
+
+			static int getResourceIndex(int rtIndex )
+			{
+				return Transplan::r_trans[rtIndex].r_index;
+			}
+
+			static int getStateVariableIndex(int svtIndex )
+			{
+				return Transplan::sv_trans[svtIndex].sv_index;
+			}
+
+
 			/* Extract solution
 			 void print_plan(Search* search);
 			 */

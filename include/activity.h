@@ -88,6 +88,18 @@ namespace TRANSPLAN
             return *this;
         }
 
+        IntVector getTransitionsOnDomainObject(int objIndex, bool isSV )
+        {
+        	if( isSV )
+        	{
+        		return sv_trans_map[objIndex];
+        	}
+        	else
+        	{
+        		return res_trans_map[objIndex];
+        	}
+        }
+
 
 
     };

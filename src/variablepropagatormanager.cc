@@ -34,6 +34,7 @@
 #include "rtcustomerpropagator.h"
 #include "rtsupplierpropagator.h"
 #include "rtsupportpropagator.h"
+#include "rtFFSpropagator.h"
 #include "actioninplanpropagator.h"
 #include "actionstarttimepropagator.h"
 #include "actiondistancepropagator.h"
@@ -79,7 +80,7 @@ namespace TRANSPLAN
 
 		VariablePropagatorManager::rt_remaining_demand.clear(); //CSPInterval
 		VariablePropagatorManager::rt_remaining_support.clear(); //CSPInterval
-		VariablePropagatorManager::rt_FSS.clear(); //CSPInterval
+		VariablePropagatorManager::rt_FFS.clear(); //CSPInterval
 
 		VariablePropagatorManager::rt_poss_pred.clear(); //CSPAuxMonoDecSet
 		VariablePropagatorManager::rt_poss_succ.clear(); //CSPAuxMonoDecSet
@@ -218,7 +219,7 @@ namespace TRANSPLAN
 			rt_remaining_support.push_back(createNewIntervalVar(p_rem_supp));
 
 			//Flow from Start
-			rt_FSS.push_back(createNewIntervalVar(p_dir_inflow));
+			rt_FFS.push_back(createNewIntervalVar(p_dir_inflow));
 
 			/// possible predecessors
 			rt_poss_pred.push_back(createNewAuxMonoDecSet(t->poss_pred));
@@ -461,6 +462,10 @@ namespace TRANSPLAN
 		suppliers(initState, trans_idx).addPropagator(propagatorCount++);
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
+		this->propagators.push_back(new RTFSSPropagator(trans_idx, propagatorCount, *this));
+		FFS(initState, trans_idx).addPropagator(propagatorCount++);
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
 		this->propagators.push_back(new TInplanPropagator(trans_idx, false, propagatorCount, *this));
 		rt_inplan(initState, trans_idx).addPropagator(propagatorCount++);
 
@@ -638,9 +643,9 @@ namespace TRANSPLAN
 		return state->getCSPIntervalVar(rt_remaining_support[rt_index]);
 	}
 
-	CSPIntervalVar& VariablePropagatorManager::FSS(SearchState* state, int rt_index)
+	CSPIntervalVar& VariablePropagatorManager::FFS(SearchState* state, int rt_index)
 	{
-		return state->getCSPIntervalVar(rt_FSS[rt_index]);
+		return state->getCSPIntervalVar(rt_FFS[rt_index]);
 	}
 
 	CSPAuxSetMonoDecVar& VariablePropagatorManager::poss_pred(SearchState* state, int rt_index)
@@ -848,12 +853,12 @@ namespace TRANSPLAN
 
 	int VariablePropagatorManager::getFFS(SearchState* state, int rt_index)
 	{
-		return FSS(state, rt_index).min();
+		return FFS(state, rt_index).min();
 	}
 
 	int VariablePropagatorManager::getFFSGap(SearchState* state, int rt_index)
 	{
-		return FSS(state, rt_index).max() - FSS(state, rt_index).min();
+		return FFS(state, rt_index).max() - FFS(state, rt_index).min();
 	}
 
 	int VariablePropagatorManager::getRTSupportMax(SearchState* state, int t_from, int t_to)

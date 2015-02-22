@@ -16,21 +16,7 @@ namespace TRANSPLAN
 	class RTLowerBoundInferator: public Inferator
 	{
 		private:
-			void addToLBSet(int rt_index)
-			{
-				manager.rt_LBChildren(currentState, svt_index).insert(svtIndex);
-			}
 
-			void clearLBSet()
-			{
-				IntSet children = manager.rt_LBChildren(currentState, rtIndex).domain;
-
-				for (IntSet::iterator itr = children.begin(); itr != children.end(); itr++)
-				{
-					manager.rt_LBChildren(currentState, *itr).remove(rtIndex);
-				}
-
-			}
 		public:
 			int rtIndex;
 
@@ -49,6 +35,48 @@ namespace TRANSPLAN
 			PROP_STATUS infer(SearchState* state)
 			{
 				this->currentState = state;
+
+				clearLBSet(rtIndex, true);
+				int remDemand = manager.getRemDemand(currentState, rtIndex);
+
+				if ( remDemand > 0 )
+				{
+					//if this variable is still unsupported
+
+					IntSet previous = manager.poss_pred(currentState, rtIndex).dom();
+
+					IntPairVector suppVec;
+
+					IntSet::iterator itr = previous.begin();
+
+					while (itr != previous.end())
+					{
+						int prevIndex = *itr;
+
+						if (prevIndex != NOT_IN_PLAN)
+						{
+							int endVal = manager.getTransEnd(currentState, prevIndex, false).min();
+							suppVec.push_back(std::make_pair<int, int>(prevIndex, endVal));
+						}
+						itr++;
+					}
+
+					std::sort(suppVec.begin(), suppVec.end(), CompareIntPairSecondValMin());
+					int totalSupply = 0;
+					int startLBVal = 0;
+					for( int i = 0; i < suppVec.size() and totalSupply < remDemand; i++)
+					{
+						IntPair supp = suppVec[i];
+						totalSupply = totalSupply + manager.getRTSupportMax(currentState, supp.first, rtIndex);
+						startLBVal = std::max(startLBVal, supp.second);
+						addToLBSet(rtIndex, supp.first, false);
+					}
+
+					IMPLY_EXCL_ON_FAILURE(manager.getTransStart(currentState, rtIndex, false).gq(startLBVal), Transplan::getTransActIndex(rtIndex, false));
+
+
+				}
+
 				return TRANSPLAN::FIX;
 			}
 	};

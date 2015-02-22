@@ -38,7 +38,7 @@ namespace TRANSPLAN
 
 			IntVector rt_remaining_demand; //CSPInterval
 			IntVector rt_remaining_support; //CSPInterval
-			IntVector rt_FSS; //CSPInterval
+			IntVector rt_FFS; //CSPInterval
 
 			IntVector rt_poss_pred; //CSPAuxMonoDecSet
 			IntVector rt_poss_succ; //CSPAuxMonoDecSet
@@ -147,7 +147,7 @@ namespace TRANSPLAN
 
 			CSPIntervalVar& rem_demand(SearchState* state, int rt_index);
 			CSPIntervalVar& rem_supp(SearchState* state, int rt_index);
-			CSPIntervalVar& FSS(SearchState* state, int rt_index);
+			CSPIntervalVar& FFS(SearchState* state, int rt_index);
 			CSPAuxSetMonoDecVar& poss_pred(SearchState* state, int rt_index);
 			CSPAuxSetMonoDecVar& poss_succ(SearchState* state, int rt_index);
 			CSPAuxSetMonoIncVar& customers(SearchState* state, int rt_index);

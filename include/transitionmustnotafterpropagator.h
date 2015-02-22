@@ -47,7 +47,7 @@ namespace TRANSPLAN
 					int addedTrans = mNotAfter.addedElements.top();
 					if (isSVT)
 					{
-						///delte from next domain
+						///delete from next domain
 						IMPLY_EXCL_ON_FAILURE(manager.next(currentState, tIndex).nq( addedTrans), actIndex);
 					}
 					else

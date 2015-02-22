@@ -23,12 +23,14 @@ class CSPGraphVar : public CSPVariable
         int fromNode;
         int toNode;
         int weight;
+        int maxWeight; ///maximum weight
 
-        CSPGraphEdge(int index, int from, int to, int weight)
+        CSPGraphEdge(int index, int from, int to, int weight, int maxWeight = INT_MAX)
         : index(index)
         , fromNode(from)
         , toNode(to)
         , weight(weight)
+        , maxWeight(maxWeight)
         {
         }
 
@@ -37,6 +39,7 @@ class CSPGraphVar : public CSPVariable
         , fromNode(edge.fromNode)
         , toNode(edge.toNode)
         , weight(edge.weight)
+        , maxWeight(edge.maxWeight)
         {
         }
         
@@ -46,13 +49,17 @@ class CSPGraphVar : public CSPVariable
             this->fromNode = edge.fromNode;
             this->toNode   = edge.toNode;
             this->weight   = edge.weight;  
-            
+            this->maxWeight = edge.maxWeight;
             return *this;
         }
 
         bool updateWeight(int newWeight)
         {
-            if (weight < newWeight)
+        	if( newWeight > maxWeight )
+        	{
+        		return false;
+        	}
+        	else if (weight <= newWeight)
             {
                 weight = newWeight;
                 return true;
@@ -76,7 +83,7 @@ public:
     
     CSPGraphVar& operator=(const CSPGraphVar& var);
 
-    void addEdge(int from, int to, int weight);
+    void addEdge(int from, int to, int weight, int maxWeight);
 
     CSP_MOD_EVENT updateEdge(int from, int to, int weight);
     

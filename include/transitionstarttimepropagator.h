@@ -27,6 +27,44 @@ namespace TRANSPLAN
 					currentState->activateInferator(manager.getUBInferatorIndex(this->isSVT, *itr));
 				}
 
+				if (isSVT)
+				{
+					if (!manager.isSVTExcluded(currentState, tIndex) && !manager.prev(currentState, tIndex).assigned())
+					{
+						RETURN_IF_FAIL( inferAbsoluteTemporalConstraint());
+					}
+				}
+				else if (!manager.isRTExcluded(currentState, tIndex) && manager.getRemDemand(currentState, tIndex) > 0)
+				{
+					RETURN_IF_FAIL( inferAbsoluteTemporalConstraint());
+				}
+
+				return TRANSPLAN::FIX;
+			}
+
+			PROP_STATUS inferAbsoluteTemporalConstraint()
+			{
+				int startMax = manager.getTransStart(currentState, tIndex, isSVT).max();
+
+				IntSet poss_supp;
+				if (isSVT)
+				{
+					poss_supp = manager.prev(currentState, tIndex).dom();
+				}
+				else
+					poss_supp = manager.poss_pred(currentState, tIndex).dom();
+
+				IntSet::iterator itr = poss_supp.begin();
+				while (itr != poss_supp.end())
+				{
+					int endMin = manager.getTransEnd(currentState, *itr, isSVT).min();
+					if (endMin > startMax)
+					{
+						RETURN_IF_FAIL(popagateTransitionAntiPrecedence(*itr, tIndex, isSVT));
+					}
+					itr++;
+				}
+
 				return TRANSPLAN::FIX;
 			}
 

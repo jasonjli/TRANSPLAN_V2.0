@@ -269,5 +269,27 @@ namespace TRANSPLAN
             return *this;
         }
     };
+
+    struct CompareIntPairSecondValMin
+    {
+        bool operator()(const std::pair<int,int>& pair1, const std::pair<int,int>& pair2)
+        {
+            if( pair1.second < pair2.second )
+                return true;
+            else
+                return false;
+        }
+    };
+
+    struct CompareIntPairSecondValMax
+	{
+		bool operator()(const std::pair<int,int>& pair1, const std::pair<int,int>& pair2)
+		{
+			if( pair1.second > pair2.second )
+				return true;
+			else
+				return false;
+		}
+	};
 }
 #endif

@@ -32,6 +32,10 @@ namespace TRANSPLAN
 			 */
 			CSPIntervalVar& operator=(const CSPIntervalVar& var);
 
+			/*!
+			 * < operator overloading based on lower bound values
+			 */
+
 			CSPIntervalVar* clone();
 
 			/*!

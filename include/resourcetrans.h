@@ -103,6 +103,16 @@ namespace TRANSPLAN
             return a_index == dummy_end_act_id;
         }
 
+        int getRequirement()
+        {
+        	return this->req;
+        }
+
+        int getResourceIndex()
+        {
+        	return this->r_index;
+        }
+
 
     };
 }

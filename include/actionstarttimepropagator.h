@@ -61,23 +61,31 @@ namespace TRANSPLAN
 			{
 				if (manager.isActIncluded(currentState, actionIndex))
 				{
-					IntPairSet targetActions;
-					manager.a_dist(currentState).getOutgoingEdgesToIndexSet(actionIndex, targetActions);
-					for (IntPairSet::iterator itr = targetActions.begin(); itr != targetActions.end(); itr++)
+					if (isLB)
 					{
-						int toActIndex = (*itr).first;
-						int lb_start_dist = (*itr).second;
-
-						if (isLB)
+						IntPairSet targetActions;
+						manager.a_dist(currentState).getOutgoingEdgesToIndexSet(actionIndex, targetActions);
+						for (IntPairSet::iterator itr = targetActions.begin(); itr != targetActions.end(); itr++)
 						{
+							int toActIndex = (*itr).first;
+							int lb_start_dist = (*itr).second;
+
 							int proposedStartTime = startTime.first + lb_start_dist;
 							IMPLY_EXCL_ON_FAILURE(manager.a_start(currentState, toActIndex).gq(proposedStartTime), toActIndex);
 						}
+					}
 
-						if (isUB)
+					if (isUB)
+					{
+						IntPairSet targetActions;
+						manager.a_dist(currentState).getIncomingEdgesFromIndexSet(actionIndex, targetActions);
+						for (IntPairSet::iterator itr = targetActions.begin(); itr != targetActions.end(); itr++)
 						{
-							int proposedStartTime = startTime.second + lb_start_dist;
-							IMPLY_EXCL_ON_FAILURE(manager.a_start(currentState, toActIndex).lq(proposedStartTime), toActIndex);
+							int fromActIndex = (*itr).first;
+							int lb_start_dist = (*itr).second;
+
+							int proposedStartTime = startTime.second - lb_start_dist;
+							IMPLY_EXCL_ON_FAILURE(manager.a_start(currentState, fromActIndex).lq(proposedStartTime), fromActIndex);
 						}
 					}
 				}

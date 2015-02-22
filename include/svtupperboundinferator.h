@@ -16,21 +16,7 @@ namespace TRANSPLAN
 	class SVTUpperBoundInferator: public Inferator
 	{
 		private:
-			void addToUBSet(int svt_index)
-			{
-				manager.svt_UBChildren(currentState, svt_index).insert(svtIndex);
-			}
 
-			void clearUBSet()
-			{
-				IntSet children = manager.svt_UBChildren(currentState, svtIndex).domain;
-
-				for (IntSet::iterator itr = children.begin(); itr != children.end(); itr++)
-				{
-					manager.svt_UBChildren(currentState, svtIndex).remove(*itr);
-				}
-
-			}
 		public:
 			int svtIndex;
 
@@ -49,6 +35,40 @@ namespace TRANSPLAN
 			PROP_STATUS infer(SearchState* state)
 			{
 				this->currentState = state;
+
+				clearUBSet(svtIndex, true);
+				//if this variable has prev[] assigned
+				if (!manager.next(currentState, svtIndex).assigned())
+				{
+					//if this variable is still unsupported
+
+					IntSet nextset = manager.next(currentState, svtIndex).dom();
+
+					IntPairVector custVec;
+
+					IntSet::iterator itr = nextset.begin();
+
+					while (itr != nextset.end())
+					{
+						int nextIndex = *itr;
+
+						if (nextIndex != NOT_IN_PLAN)
+						{
+							int startVal = manager.getTransStart(currentState, nextIndex, true).max();
+							custVec.push_back(std::make_pair<int, int>(nextIndex, startVal));
+						}
+						itr++;
+					}
+
+					std::sort(custVec.begin(), custVec.end(), CompareIntPairSecondValMax());
+
+					int endUBVal = custVec[0].second;
+					int ubCustIndex = custVec[0].first;
+
+					IMPLY_EXCL_ON_FAILURE(manager.getTransEnd(currentState, svtIndex, true).lq(endUBVal), Transplan::getTransActIndex(svtIndex, true));
+
+					addToUBSet(svtIndex, ubCustIndex, true);
+				}
 				return TRANSPLAN::FIX;
 			}
 	};

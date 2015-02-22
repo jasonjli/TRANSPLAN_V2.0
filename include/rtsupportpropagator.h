@@ -64,7 +64,7 @@ namespace TRANSPLAN
 
 					int effectiveFFS = std::min(lbSupport, FFSFrom);
 
-					IMPLY_EXCL_ON_FAILURE( manager.FSS(currentState, toRTIndex).gq( effectiveFFS), toActIndex);
+					IMPLY_EXCL_ON_FAILURE( manager.FFS(currentState, toRTIndex).gq( effectiveFFS), toActIndex);
 
 					supp.isMinUpdate = false;
 				}

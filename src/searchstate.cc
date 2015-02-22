@@ -21,8 +21,16 @@ namespace TRANSPLAN
 	}
 
 	SearchState::SearchState(const SearchState& state) :
-		search(state.search), integerVariables(state.integerVariables), intervalVariables(state.intervalVariables), booleanVariables(state.booleanVariables), maxCounterVariables(state.maxCounterVariables), auxSetVariables(state.auxSetVariables),
-				auxIntVariables(state.auxIntVariables), auxSetMonoIncVariables(state.auxSetMonoIncVariables), auxSetMonoDecVariables(state.auxSetMonoDecVariables), graphVariables(state.graphVariables)
+		search(state.search),
+		integerVariables(state.integerVariables),
+		intervalVariables(state.intervalVariables),
+		booleanVariables(state.booleanVariables),
+		maxCounterVariables(state.maxCounterVariables),
+		auxSetVariables(state.auxSetVariables),
+		auxIntVariables(state.auxIntVariables),
+		auxSetMonoIncVariables(state.auxSetMonoIncVariables),
+		auxSetMonoDecVariables(state.auxSetMonoDecVariables),
+		graphVariables(state.graphVariables)
 	{
 		this->stateID = state.stateID;
 	}

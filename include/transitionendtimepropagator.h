@@ -26,6 +26,7 @@ namespace TRANSPLAN
 			{
 				IMPLY_EXCL_ON_FAILURE(startVar.gq(minStartVal), actIndex);
 
+				//// re-infer lower bounds
 				IntSet lbChildren = manager.getTransLBChildren(currentState, tIndex, isSVT).dom();
 
 				IntSet::iterator itr = lbChildren.begin();
@@ -33,6 +34,44 @@ namespace TRANSPLAN
 				{
 					currentState->activateInferator(manager.getLBInferatorIndex(this->isSVT, *itr));
 				}
+
+				if( isSVT )
+				{
+					if( !manager.isSVTExcluded(currentState, tIndex) && !manager.next(currentState, tIndex).assigned() )
+					{
+						RETURN_IF_FAIL( inferAbsoluteTemporalConstraint());
+					}
+				}
+				else if( !manager.isRTExcluded(currentState, tIndex) && manager.getRemSupport(currentState, tIndex) > 0 )
+				{
+					RETURN_IF_FAIL( inferAbsoluteTemporalConstraint());
+				}
+				return TRANSPLAN::FIX;
+			}
+
+			PROP_STATUS inferAbsoluteTemporalConstraint()
+			{
+				int endMin = manager.getTransEnd(currentState, tIndex, isSVT).min();
+
+				IntSet poss_succ;
+				if( isSVT )
+				{
+					poss_succ = manager.next(currentState, tIndex).dom();
+				}
+				else
+					poss_succ = manager.poss_succ(currentState, tIndex).dom();
+
+				IntSet::iterator itr = poss_succ.begin();
+				while( itr != poss_succ.end() )
+				{
+					int startMax = manager.getTransStart(currentState, *itr, isSVT).max();
+					if( endMin > startMax )
+					{
+						RETURN_IF_FAIL(popagateTransitionAntiPrecedence(tIndex, *itr, isSVT));
+					}
+					itr++;
+				}
+
 				return TRANSPLAN::FIX;
 			}
 		public:
@@ -76,6 +115,7 @@ namespace TRANSPLAN
 				if (end.isMinUpdate)
 				{
 					RETURN_IF_FAIL( propagateEndMin(end.min() - duration, start, actIndex) );
+					///
 					end.isMinUpdate = false;
 				}
 				return TRANSPLAN::FIX;

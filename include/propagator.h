@@ -76,26 +76,14 @@ namespace TRANSPLAN
 			 */
 			PROP_STATUS popagateTransitionPrecedence(int fromIndex, int toIndex, bool isSVT)
 			{
-				if (isSVT)
-				{
-					RETURN_IF_FAILURE(manager.svt_must_after(currentState, fromIndex).insert(toIndex));
-					RETURN_IF_FAILURE(manager.svt_must_before(currentState, toIndex).insert(fromIndex));
+				RETURN_IF_FAILURE(manager.getTransMustAfter(currentState, fromIndex, isSVT).insert(toIndex));
+				RETURN_IF_FAILURE(manager.getTransMustBefore(currentState, toIndex, isSVT).insert(fromIndex));
 
-					int distanceLB = Transplan::sv_trans[fromIndex].offset + Transplan::sv_trans[fromIndex].duration - Transplan::sv_trans[toIndex].offset;
-					int fromAct    = Transplan::sv_trans[fromIndex].a_index;
-					int toAct      = Transplan::sv_trans[toIndex].a_index;
-					manager.a_dist(currentState).updateEdge(fromAct, toAct, distanceLB);
-				}
-				else
-				{
-					RETURN_IF_FAILURE(manager.rt_must_after(currentState, fromIndex).insert(toIndex));
-					RETURN_IF_FAILURE(manager.rt_must_before(currentState, toIndex).insert(fromIndex));
+				int distanceLB = Transplan::getTransOffset(fromIndex, isSVT) + Transplan::getTransDuration(fromIndex, isSVT) - Transplan::getTransOffset(toIndex, isSVT);
+				int fromAct = Transplan::getTransActIndex(fromIndex, isSVT);
+				int toAct = Transplan::getTransActIndex(toIndex, isSVT);
 
-					int distanceLB = Transplan::r_trans[fromIndex].offset + Transplan::r_trans[fromIndex].duration - Transplan::r_trans[toIndex].offset;
-					int fromAct    = Transplan::r_trans[fromIndex].a_index;
-					int toAct      = Transplan::r_trans[toIndex].a_index;
-					manager.a_dist(currentState).updateEdge(fromAct, toAct, distanceLB);
-				}
+				RETURN_IF_FAILURE(manager.a_dist(currentState).updateEdge(fromAct, toAct, distanceLB));
 
 				RETURN_IF_FAIL(popagateTransitionAntiPrecedence(fromIndex, toIndex, isSVT));
 
@@ -106,21 +94,25 @@ namespace TRANSPLAN
 			 * PropagatorHelperMethod Post(T--X-->T');
 			 1) Add T in MustNOTBefore(T')
 			 2) Add T' in MustNotAfter(T)
+			 3)ActionDistance(a(T'), a(T)) >= - offset(T) - duration(T) + offset(T') + 1
 			 */
 			PROP_STATUS popagateTransitionAntiPrecedence(int fromIndex, int toIndex, bool isSVT)
 			{
-				if (isSVT)
-				{
-					RETURN_IF_FAILURE(manager.svt_mustnot_after(currentState, fromIndex).insert(toIndex));
-					RETURN_IF_FAILURE(manager.svt_mustnot_before(currentState, toIndex).insert(fromIndex));
-				}
-				else
-				{
-					RETURN_IF_FAILURE(manager.rt_mustnot_after(currentState, fromIndex).insert(toIndex));
-					RETURN_IF_FAILURE(manager.rt_mustnot_before(currentState, toIndex).insert(fromIndex));
-				}
+				RETURN_IF_FAILURE(manager.getTransMustNOTAfter(currentState, fromIndex, isSVT).insert(toIndex));
+				RETURN_IF_FAILURE(manager.getTransMustNOTBefore(currentState, toIndex, isSVT).insert(fromIndex));
+
+				int distanceLB = Transplan::getTransOffset(toIndex, isSVT) - Transplan::getTransOffset(fromIndex, isSVT) - Transplan::getTransDuration(fromIndex, isSVT) + 1;
+				int fromAct = Transplan::getTransActIndex(fromIndex, isSVT);
+				int toAct = Transplan::getTransActIndex(toIndex, isSVT);
+
+				RETURN_IF_FAILURE(manager.a_dist(currentState).updateEdge(toAct, fromAct, distanceLB));
 
 				return TRANSPLAN::FIX;
+			}
+
+			bool hasPrecendenceConstraint(int fromIndex, int toIndex, bool isSVT)
+			{
+				return manager.getTransMustAfter(currentState, fromIndex, isSVT).dom().count(toIndex) > 0;
 			}
 
 	};
