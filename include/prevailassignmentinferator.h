@@ -22,14 +22,14 @@ public:
     :Inferator(inferatorIndex, manager)
     ,svtIndex(svtIndex)
     {
-        
+        return;        
     }
     
     PrevailAssignmentInferator(const PrevailAssignmentInferator& infer)
     :Inferator(infer)
     ,svtIndex(svtIndex)
     {
-        
+        return;
     }
     
     PROP_STATUS infer(SearchState* state)

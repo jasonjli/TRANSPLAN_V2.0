@@ -44,7 +44,7 @@ namespace TRANSPLAN
 				{
 					RETURN_IF_FAIL(propagateTransStartTimes(svTrans[i], startTime, isLB, isUB, true));
 				}
-
+                
 			}
 
 			PROP_STATUS propagateRTStratTimes(IntPair startTime, bool isLB, bool isUB)
@@ -54,7 +54,6 @@ namespace TRANSPLAN
 				{
 					RETURN_IF_FAIL(propagateTransStartTimes(rTrans[i], startTime, isLB, isUB, false));
 				}
-
 			}
 
 			PROP_STATUS propagateActionStartTimes(IntPair startTime, bool isLB, bool isUB)
@@ -98,13 +97,15 @@ namespace TRANSPLAN
 			ActionStartTimePropagator(int actionIndex, int propagatorIndex, VariablePropagatorManager& manager) :
 				Propagator(propagatorIndex, manager), actionIndex(actionIndex)
 			{
-
+                // do something
+                return;
 			}
 
 			ActionStartTimePropagator(const ActionStartTimePropagator& prop) :
 				Propagator(prop), actionIndex(prop.actionIndex)
 			{
-
+                // do something
+                return;
 			}
 
 			/*

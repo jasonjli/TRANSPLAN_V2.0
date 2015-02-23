@@ -29,7 +29,8 @@ namespace TRANSPLAN
 			SVTUpperBoundInferator(const SVTUpperBoundInferator& infer) :
 				Inferator(infer), svtIndex(svtIndex)
 			{
-
+                // do something
+                return;
 			}
 
 			PROP_STATUS infer(SearchState* state)

@@ -179,7 +179,7 @@ namespace TRANSPLAN
 			this->inferators.push_back(new SVTUpperBoundInferator(inferatorCount, t->index, *this));
 			svt_UB_inferators.insert(std::make_pair(t->index, inferatorCount++));
 
-			if (t->type = TRANSPLAN::PRV)
+			if (t->type == TRANSPLAN::PRV)
 			{
 				this->inferators.push_back(new PrevailAssignmentInferator(inferatorCount, t->index, *this));
 				prevail_inferators.insert(std::make_pair(t->index, inferatorCount++));
@@ -332,7 +332,7 @@ namespace TRANSPLAN
 	{
 		//std::cout<<"Creating variabls for actions....\n";
 		/******************************************************************************
-		 /**************  create variables for actions
+		 **************  create variables for actions
 		 ******************************************************************************/
 		for (int i = 0; i < Transplan::n_activities; ++i)
 		{
@@ -350,8 +350,6 @@ namespace TRANSPLAN
 			IntPair default_s_time(Transplan::activities[act->index].release_date, Transplan::activities[act->index].deadline);
 			a_start_time.push_back(createNewIntervalVar(default_s_time));
 
-			//PropagatorManager::addActProp(act->index);
-			//PropagatorManager::createPropagatorsForAction(act->index);
 		}
 
 	}

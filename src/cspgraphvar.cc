@@ -53,10 +53,10 @@ namespace TRANSPLAN
 
 		while (itr != this->outgoingEdges[from].end())
 		{
-			if (this->edges[*itr].toNode = to)
+			if (this->edges[*itr].toNode == to)
 			{
 				foundEdge = true;
-				if (this->edges[*itr].weight = weight)
+				if (this->edges[*itr].weight == weight)
 				{
 					return TRANSPLAN::IGNORED;
 				}
@@ -97,7 +97,7 @@ namespace TRANSPLAN
 
 		while (itr != this->outgoingEdges[from].end())
 		{
-			if (this->edges[*itr].toNode = to)
+			if (this->edges[*itr].toNode == to)
 			{
 				return this->edges[*itr].weight;
 			}
